@@ -8,7 +8,7 @@ using ParadoxNotion.Design;
 namespace ViAgents.NodeCanvas.Actions{
 
 	//[ScriptName("Interact With Object")]
-	[Category("★ Uruk")]
+	[Category("★ ViAgents")]
 	public class InteractWithObjectBT : ActionTask<Transform> {
 
 		public BBParameter<GameObject> gameObject;

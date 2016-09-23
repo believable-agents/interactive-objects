@@ -18,11 +18,9 @@ public enum ObjectType {
 public class InventoryObject : MonoBehaviour {
 
 	[SerializeField]
-	private string name;
 	public string Name { get { return name; }  set { name = value; } }//{get; private set;}		// Name of the object
 
 	[SerializeField]
-	private string tag;
 	public string Tag { get { return tag; } set {tag = value; } } // {get; private set;}		// Tag on the object
 	
 	[SerializeField]

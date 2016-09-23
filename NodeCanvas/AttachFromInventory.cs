@@ -7,17 +7,17 @@ using ParadoxNotion.Design;
 namespace ViAgents.NodeCanvas.Actions 
 {
 	//[ScriptName("Attach From Inventory")]
-	[Category("★ Uruk")]
+	[Category("★ ViAgents")]
 	public class AttachFromInventory : ActionTask<Transform> 
 	{
-		public BBParameter<string> name;
+		public BBParameter<string> objectName;
 
 		protected override void OnExecute() 
 		{
 			var inventory = agent.GetComponent<Inventory> ();
-			var storedObject = inventory.FindByName (name.value);
+			var storedObject = inventory.FindByName (objectName.value);
 			if (storedObject == null) {
-				Debug.LogError(agent.name + " has no object with name: " + name.value);
+				Debug.LogError(agent.name + " has no object with name: " + objectName.value);
 			}
 
 			// now instantiate a new object and attach to the bone

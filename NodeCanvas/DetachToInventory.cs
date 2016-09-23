@@ -7,7 +7,7 @@ using ParadoxNotion.Design;
 namespace ViAgents.NodeCanvas.Actions 
 {
 	//[ScriptName("Detach To Inventory")]
-	[Category("★ Uruk")]
+	[Category("★ ViAgents")]
 	public class DetachToInventory : ActionTask<Transform> 
 	{
 		public BBParameter<GameObject> attachedObject;

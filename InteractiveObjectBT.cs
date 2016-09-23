@@ -5,6 +5,7 @@ using NodeCanvas.BehaviourTrees;
 using NodeCanvas;
 using ViAgents;
 using NodeCanvas.Framework;
+using ViAgents.Unity;
 
 public class InteractiveObjectBT : Interactive
 {
@@ -13,11 +14,6 @@ public class InteractiveObjectBT : Interactive
 	public Vector3 lookAt; // where will agent look 
 	public BehaviourTree BT;
 
-	//private BehaviourTree btInstance;
-
-//	public bool forceTransform = true;
-
-	private Transform tran;
 	private ViAgent agent;
     public bool[] spots;
 
@@ -60,14 +56,6 @@ public class InteractiveObjectBT : Interactive
 			yield break;
 		}
 
-//		if (btInstance == null)
-//		{
-//			btInstance = (BehaviourTree) Instantiate(BT, transform.position, transform.rotation);
-//			//btInstance..transform.parent = GameObject.Find("@RuntimeTrees").transform; // this.transform; //organization
-//			btInstance.name = sender.name + "-" + BT.name;
-////			btInstance.name = sender.name + "-" + BT.name;
-//		}
-
 		// get agent reference for log purposes
 		this.agent = sender.GetComponent<ViAgent>();
 
@@ -79,45 +67,25 @@ public class InteractiveObjectBT : Interactive
 				yield return StartCoroutine(MecanimUtility.WaitForState(sender.GetComponent<Animator>(), animationState));
 			}
 
-			// itween to the new position
-		    sender.transform.DOMove(GetPosition(spot), 0.5f);
-			yield return new WaitForSeconds(0.5f);
+            var p = GetPosition(lookAt);
 
-			// now set the position
-//			this.Log("Position set to: " + GetPosition(positionOffset));
-			//sender.transform.position = GetPosition(positionOffset);
-
-			// set look only if it is not empty
-			if (!lookAt.Equals(Vector3.zero))
-			{
-				var p = GetPosition(lookAt);
-				p = new Vector3(
-				p.x,
-				sender.transform.position.y,
-				p.z);
-
-//				this.Log("Look at: " + p);
-				//sender.transform.LookAt(p);
-				yield return StartCoroutine (AffineUtility.RotateTowards (sender.transform, p));
-			} 
+            // itween to the new position
+            sender.transform.DOMove(GetPosition(spot), 0.5f).OnComplete(() =>
+		    {
+                if (!lookAt.Equals(Vector3.zero))
+                {
+                    // this.Log("Look at: " + p);
+                    sender.transform.DOLookAt(p, 0.5f, AxisConstraint.Y);
+                }
+            });
+			
 			this.Log("Position Forced");
-		}
+            yield return new WaitForSeconds(0.5f);
+        }
 
-//		Debug.Log("Init action ...");
 
 		// take blackboard from component
 		var blackboard = sender.GetComponent<Blackboard> ();
-
-		// if blackbord does not exists, try to take it from BT
-		//if (blackboard == null) {
-		//	blackboard = (Blackboard) BT.blackboard;
-		//}
-
-		//// add blackboard if it does not exist!
-		//if (blackboard == null) {
-		//	blackboard = gameObject.AddComponent<Blackboard> ();
-		//}
-
 
 		// copy all values from object blackboard
 		blackboard.SetValue ("InteractiveObject", gameObject);
@@ -188,7 +156,7 @@ public class InteractiveObjectBT : Interactive
 	private void Log(string message) {
 		if (this.agent != null)
 		{
-			agent.Log(string.Format("✫ ({0}) {1}", gameObject.name,  message));
+			agent.Log(LogLevel.Debug, LogSource.Action,  string.Format("✫ ({0}) {1}", gameObject.name,  message));
 		} else
 		{
 			Debug.Log(message);

@@ -7,7 +7,7 @@ using ParadoxNotion.Design;
 namespace ViAgents.NodeCanvas.Actions 
 {
 	//[ScriptName("Attach From Inventory With Tag")]
-	[Category("★ Uruk")]
+	[Category("★ ViAgents")]
 	public class AttachFromInventoryByTag : ActionTask<Transform>
 	{
 		public BBParameter<string> tag;
