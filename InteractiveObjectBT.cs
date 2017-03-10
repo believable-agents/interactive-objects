@@ -96,7 +96,8 @@ public class InteractiveObjectBT : Interactive
 	    BT.repeat = false;
 	    var i = (BehaviourTree) Instantiate(BT);
         
-        i.StartGraph (sender.transform, blackboard, (result) => GraphStoppedCallback(callback, result, spotIndex));
+        // TODO: Investigate the parameter
+        i.StartGraph (sender.transform, blackboard, true, (result) => GraphStoppedCallback(callback, result, spotIndex));
 
 		this.Log ("Tree started.");
 

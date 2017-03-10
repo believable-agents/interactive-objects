@@ -35,8 +35,8 @@ namespace ViAgents.NodeCanvas.Actions{
 
 			if (disablePushing)
 			{
-				radius = agent.GetComponent<NavMeshAgent>().radius;
-				agent.GetComponent<NavMeshAgent>().radius = 0;
+				radius = agent.GetComponent<UnityEngine.AI.NavMeshAgent>().radius;
+				agent.GetComponent<UnityEngine.AI.NavMeshAgent>().radius = 0;
 			}
 
 			// start the coroutine
@@ -54,7 +54,7 @@ namespace ViAgents.NodeCanvas.Actions{
 		void Finish(bool result) {
 			if (disablePushing)
 			{
-				agent.GetComponent<NavMeshAgent>().radius = this.radius;
+				agent.GetComponent<UnityEngine.AI.NavMeshAgent>().radius = this.radius;
 			}
 
 			EndAction (true);
