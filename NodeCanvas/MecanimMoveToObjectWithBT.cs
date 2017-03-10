@@ -15,7 +15,6 @@ namespace NodeCanvas.Actions{
         public BBParameter<string> action;
 
         public bool startInteraction;
-        public bool forceTransform;
         public bool disablePushing;
         public string animationState;
   
@@ -124,7 +123,7 @@ namespace NodeCanvas.Actions{
             }
 
             // start the coroutine
-            StartCoroutine(iObject.InteractWithObject(agent.gameObject, action.value, forceTransform, animationState, Finish));
+            StartCoroutine(iObject.InteractWithObject(agent.gameObject, action.value, forcePosition, animationState, Finish));
 
             return false;
         }
