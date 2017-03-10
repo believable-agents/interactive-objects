@@ -17,24 +17,24 @@ public enum ObjectType {
 [System.Serializable]
 public class InventoryObject : MonoBehaviour {
 
-	[SerializeField]
-	public string Name { get { return name; }  set { name = value; } }//{get; private set;}		// Name of the object
+    [HideInInspector]
+    public string Name;     // Name of the object
 
-	[SerializeField]
-	public string Tag { get { return tag; } set {tag = value; } } // {get; private set;}		// Tag on the object
+    [SerializeField]
+    [HideInInspector]
+    public string Tag; // {get; private set;}		// Tag on the object
 	
 	[SerializeField]
-	private float size;
-	public float Size { get { return size; } set { size = value; } } //{get; private set;}		// Size/Weight of the object
+    [HideInInspector]
+    public float Size;	// Size/Weight of the object
 	
 	[SerializeField]
-	private Texture icon;
-	public Texture Icon  { get { return icon; } set { icon = value; } } // {get; private set;}		// Icon to represent the object in the GUI
+    [HideInInspector]
+    public Texture Icon; // {get; private set;}		// Icon to represent the object in the GUI
 	
 	[SerializeField]
-	private AttachmentPoint attachTo;
-	public AttachmentPoint AttachTo { get { return attachTo; } set { attachTo = value; } }
-	
+    public AttachmentPoint AttachTo;
+
 //	[SerializeField]
 //	public Vector3 localPosition;
 //	public Vector3 LocalPosition  { get { return localPosition; } set { localPosition = value; }  }
@@ -42,18 +42,36 @@ public class InventoryObject : MonoBehaviour {
 //	[SerializeField]
 //	public Vector3 localRotation;
 //	public Vector3 LocalRotation  { get { return localRotation; } set { localRotation = value; }  }
-	
-	public InventoryObject() { }
+
+    public InventoryObject() { }
 
 	// Returns true if the given name is that of this object
 	public bool CompareName (string NameToCompare) {
-		if(NameToCompare.CompareTo(Name) == 0) {
+		if(NameToCompare.CompareTo(name) == 0) {
 			return true;
 		}
 		return false;
 	}
+
+    Transform owner;
+    void Awake()
+    {
+        if (transform.GetComponent<MeshRenderer>() == null)
+        {
+            owner = transform.parent;
+        } else
+        {
+            owner = transform;
+        }
+    }
 	
 	public void Attach(Transform actor) {
-		GameObjectUtility.AttachToParent (actor, transform, attachTo.ToString(), transform.localPosition, transform.localRotation);
+        //var info = transform.FindChild("Inventory");
+        //if (info == null)
+        //{
+        //    Debug.LogError("Inventory object needs to have child object with name 'Inventory'");
+        //    return;
+        //}
+		GameObjectUtility.AttachToParent (actor, this.owner, AttachTo.ToString(), transform.localPosition, transform.localRotation);
 	}
 }

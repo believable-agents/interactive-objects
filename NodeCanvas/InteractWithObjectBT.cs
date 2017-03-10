@@ -12,6 +12,7 @@ namespace ViAgents.NodeCanvas.Actions{
 	public class InteractWithObjectBT : ActionTask<Transform> {
 
 		public BBParameter<GameObject> gameObject;
+        public BBParameter<string> action;
 
 		public bool forceTransform;
 		public bool disablePushing = true;
@@ -40,7 +41,7 @@ namespace ViAgents.NodeCanvas.Actions{
 			}
 
 			// start the coroutine
-			StartCoroutine(iObject.InteractWithObject(agent.gameObject, forceTransform, animationState, Finish));
+			StartCoroutine(iObject.InteractWithObject(agent.gameObject, action.value, forceTransform, animationState, Finish));
 
 			base.OnExecute ();
 		}
@@ -62,7 +63,7 @@ namespace ViAgents.NodeCanvas.Actions{
 
 		protected override string info{
 			get {
-				return "Interact with: " + (gameObject.value == null ? gameObject.ToString() : gameObject.value.name);
+				return string.Format("{0} action on '{1}", this.action.value == null ? "Default" : this.action.value, gameObject.value == null ? gameObject.ToString() : gameObject.value.name);
 			}
 		}
 	}

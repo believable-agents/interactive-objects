@@ -6,16 +6,26 @@ using NodeCanvas;
 using ViAgents;
 using NodeCanvas.Framework;
 using ViAgents.Unity;
+using System.Linq;
+using System;
 
 public class InteractiveObjectBT : Interactive
 {
+    [Serializable]
+    public class BTAction
+    {
+        public string action;
+        public BehaviourTree BT;
+    }
+
     public Vector3 positionOffset;
 	public Vector3[] positionOffsets; // where will agent stand when it starts interacting with object
 	public Vector3 lookAt; // where will agent look 
-	public BehaviourTree BT;
-
+    public BTAction[] actions;
 	private ViAgent agent;
     public bool[] spots;
+
+    private BehaviourTree BT;
 
 	#region implemented abstract members of Interactive
 
@@ -45,20 +55,22 @@ public class InteractiveObjectBT : Interactive
         throw new UnityException("All spots are taken!");
     }
 
-	public IEnumerator InteractWithObject (GameObject sender, bool forceTransform, string animationState, System.Action<bool> callback)
+	public IEnumerator InteractWithObject (GameObject sender, string action, bool forceTransform, string animationState, System.Action<bool> callback)
 	{
 	    var spotIndex = GetSpot();
 	    var spot = spotIndex < 0 ? this.positionOffset : this.positionOffsets[spotIndex];
 //		Debug.Log("Starting interaction ...");
 
-        if (BT == null)
+        if (this.actions.Length == 0)
         {
-            var owner = GetComponent<BehaviourTreeOwner>();
-            if (owner)
-            {
-                BT = owner.graph as BehaviourTree;
-            }
-        } 
+            throw new System.Exception("Interactive object provides no actions");
+        }
+
+        if (action == null) {
+            BT = actions[0].BT;
+        } else {
+            BT = actions.First(a => a.action == action).BT;
+        }
 		if (BT == null) {
 			Debug.LogError(name + " does not have a behaviour tree assigned");
 			yield break;
@@ -103,7 +115,14 @@ public class InteractiveObjectBT : Interactive
 
 	    BT.repeat = false;
 	    var i = (BehaviourTree) Instantiate(BT);
-        
+
+        // get the behaviour tree owner
+        var owner = GetComponent<BehaviourTreeOwner>();
+        if (owner != null)
+        {
+            owner.graph = i;
+        }
+
         // TODO: Investigate the parameter
         i.StartGraph (sender.transform, blackboard, true, (result) => GraphStoppedCallback(callback, result, spotIndex));
 
