@@ -16,10 +16,10 @@ public class MecanimUtility  {
 	}
 
 	public static IEnumerator WaitForState(Animator anim, string stopState) {
-		var stopStateHash= Animator.StringToHash(stopState);
+		var stopStateHash = Animator.StringToHash(stopState);
 
 		// now wait till we reach this state
-		while (anim.GetCurrentAnimatorStateInfo(0).nameHash != stopStateHash) {
+		while (anim.GetCurrentAnimatorStateInfo(0).shortNameHash != stopStateHash) {
 			yield return new WaitForEndOfFrame();
 		}
 	}
@@ -30,7 +30,7 @@ public class MecanimUtility  {
 			var stopStateHash= Animator.StringToHash(stopState);
 
 			// now wait till we reach this state
-			while (anim.GetCurrentAnimatorStateInfo(0).nameHash != stopStateHash) {
+			while (anim.GetCurrentAnimatorStateInfo(0).shortNameHash != stopStateHash) {
 //				Debug.Log ("waiting for state ...");
 				yield return new WaitForEndOfFrame();
 			}

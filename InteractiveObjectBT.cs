@@ -51,6 +51,14 @@ public class InteractiveObjectBT : Interactive
 	    var spot = spotIndex < 0 ? this.positionOffset : this.positionOffsets[spotIndex];
 //		Debug.Log("Starting interaction ...");
 
+        if (BT == null)
+        {
+            var owner = GetComponent<BehaviourTreeOwner>();
+            if (owner)
+            {
+                BT = owner.graph as BehaviourTree;
+            }
+        } 
 		if (BT == null) {
 			Debug.LogError(name + " does not have a behaviour tree assigned");
 			yield break;
