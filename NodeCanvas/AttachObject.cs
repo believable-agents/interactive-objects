@@ -13,6 +13,20 @@ namespace ViAgents.NodeCanvas.Actions
         [RequiredField]
         public BBParameter<GameObject> attachment;
 
+        protected override string info {
+            get {
+                if (attachment.value == null) {
+                    return "Attach " + attachment;
+                }
+
+                var inventory = attachment.value.GetComponent<InventoryObject>();
+                if (inventory != null) {
+                    return "Attach " + attachment + " to " + inventory.AttachTo.ToString();
+                }
+                return "Error: Not Inventory Objecy";
+            }
+        }
+
         protected override void OnExecute()
         {
             var inventory = attachment.value.GetComponent<InventoryObject>();

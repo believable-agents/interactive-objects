@@ -41,7 +41,7 @@ namespace ViAgents.NodeCanvas.Actions{
 			}
 
 			// start the coroutine
-			StartCoroutine(iObject.InteractWithObject(agent.gameObject, action.value, forceTransform, animationState, Finish));
+			StartCoroutine(iObject.InteractWithObject(agent.gameObject, null, action.value, forceTransform, animationState, Finish));
 
 			base.OnExecute ();
 		}

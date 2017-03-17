@@ -20,18 +20,18 @@ namespace NodeCanvas.Actions{
   
         private float radius;
         private InteractiveObjectBT iObject;
-
+        private InteractiveObjectBT.PositionOffset currentTarget;
+ 
         protected override string info{
 			get {
                 if (startInteraction)
                 {
-                    if (target.value != null)
-                    {
-                        return "Interact with " + target.value.ToString();
-                    } else
-                    {
-                        return "Perform " + action;
+                    var name = string.IsNullOrEmpty(action.value) ? "Interact" : "Perform " + action;
+
+                    if (target.name != null || target.value != null) {
+                        name += " with " + target;
                     }
+                    return name;
                 } else
                 {
                     if (target.value != null)
@@ -49,42 +49,48 @@ namespace NodeCanvas.Actions{
 		
 		protected override Vector3 Target {
 			get {
-                if (target.value == null)
-                {
+                if (target.value == null) {
                     var iobjects = GameObject.FindObjectsOfType<InteractiveObjectBT>();
                     var filtered = iobjects.Where(i => i.actions.Any(o => o.action == action.value)).ToArray();
 
                     // find closest one
-                    if (filtered.Length == 0)
-                    {
+                    if (filtered.Length == 0) {
                         throw new System.Exception("No object provides action: " + action);
                     }
-                    var distance = float.MaxValue;
-                    var closest = filtered[0];
 
-                    foreach (var iobject in filtered)
-                    {
-                        var current = Vector3.Distance(agent.transform.position, iobject.transform.position);
-                        if (current < distance)
-                        {
-                            distance = current;
-                            closest = iobject;
+                    // sort them by distance from agent
+                    var sorted = filtered.OrderBy((i) => Vector3.Distance(agent.transform.position, i.transform.position));
+
+                    // find the closes available object
+                    foreach (var obj in sorted) {
+                        var position = obj.FindPosition(true);
+                        if (position != null) {
+                            this.iObject = obj;
+                            this.currentTarget = position;
+
+                            target.value = obj.gameObject;
+                            return position.Position;
                         }
                     }
-                    target.value = closest.gameObject;
+                    throw new System.Exception("There are no free spots!");
+                   
+                } else {
+                    this.iObject = target.value.GetComponent<InteractiveObjectBT>();
+                    if (this.iObject == null) {
+                        throw new System.Exception("Target object is not interactive (no InteractiveObjectBT component is present)");
+                    }
+                    this.currentTarget = this.iObject.FindPosition();
+                    if (this.currentTarget == null) {
+                        throw new System.Exception("Current target has no free spots!");
+                    }
+                    return this.currentTarget.Position;
                 }
-                var io = target.value.GetComponent<InteractiveObjectBT>();
-                if (io == null)
-                {
-                    Debug.LogError("Target object is not interactive (no InteractiveObjectBT component is present)");
-                }
-                return io.OffsetPosition;
 			}
 		}
 
 		protected override Vector3 LookAt {
 			get {
-				return target.value.GetComponent<InteractiveObjectBT>().LookAtPosition;
+				return currentTarget.LookAt;
 			}
 		}
 		
@@ -109,13 +115,6 @@ namespace NodeCanvas.Actions{
                 return true;
             }
 
-            iObject = target.value.GetComponent<InteractiveObjectBT>();
-            if (iObject == null)
-            {
-                Debug.LogError("Agent can only interact with objects with behaviour trees: " + target.value.name);
-                return true;
-            }
-
             if (disablePushing)
             {
                 radius = agent.GetComponent<UnityEngine.AI.NavMeshAgent>().radius;
@@ -123,7 +122,7 @@ namespace NodeCanvas.Actions{
             }
 
             // start the coroutine
-            StartCoroutine(iObject.InteractWithObject(agent.gameObject, action.value, forcePosition, animationState, Finish));
+            StartCoroutine(iObject.InteractWithObject(agent.gameObject, this.currentTarget, action.value, forcePosition, animationState, Finish));
 
             return false;
         }
