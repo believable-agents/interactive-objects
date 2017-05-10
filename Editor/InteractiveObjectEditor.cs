@@ -34,7 +34,7 @@ public class PositionOffsetEditor : PropertyDrawer
 {
     const int LabelWidth = 15;
     public override void OnGUI(Rect position, SerializedProperty prop, GUIContent label) {
-       
+
         position.height = 16;
         var nr = new Rect(position);
         var width = position.width / 2;
@@ -55,8 +55,9 @@ public class PositionOffsetEditor : PropertyDrawer
 public class InteractiveActionEditor : PropertyDrawer
 {
     public override float GetPropertyHeight(SerializedProperty prop, GUIContent label) {
-        var innerEntriesProp = prop.FindPropertyRelative("modifiers");
-        return ReorderableListGUI.CalculateListFieldHeight(innerEntriesProp) + 70;
+        //var innerEntriesProp = prop.FindPropertyRelative("modifiers");
+        //return ReorderableListGUI.CalculateListFieldHeight(innerEntriesProp) + 90;
+        return 70;
     }
 
     const int LabelWidth = 15;
@@ -71,71 +72,79 @@ public class InteractiveActionEditor : PropertyDrawer
         valueRect.width -= 80;
 
         var action = prop.FindPropertyRelative("action");
+        var owner = prop.FindPropertyRelative("owner");
         var bt = prop.FindPropertyRelative("BT");
 
         labelRect.y += 5;
         valueRect.y += 5;
         EditorGUI.LabelField(labelRect, "Name: ");
         action.stringValue = EditorGUI.TextField(valueRect, action.stringValue);
+
+
+        labelRect.y += 20;
+        valueRect.y += 20;
+        EditorGUI.LabelField(labelRect, "Owner: ");
+        owner.stringValue = EditorGUI.TextField(valueRect, owner.stringValue);
+
         labelRect.y += 20;
         valueRect.y += 20;
         EditorGUI.LabelField(labelRect, "Behaviour: ");
         bt.objectReferenceValue = EditorGUI.ObjectField(valueRect, bt.objectReferenceValue, typeof(BehaviourTree), true);
 
-        position.y = y + 45;
-        position.height = 23;
-        EditorGUI.LabelField(position, "Modifiers", LabelHelper.HeaderStyle);
+        //position.y = y + 65;
+        //position.height = 25;
+        //EditorGUI.LabelField(position, "Modifiers", LabelHelper.HeaderStyle);
 
-        position.y = y + 65;
-        position.height = height - 60;
-        var innerEntriesProp = prop.FindPropertyRelative("modifiers");
-        ReorderableListGUI.ListFieldAbsolute(position, innerEntriesProp);
+        //position.y = y + 85;
+        //position.height = height - 80;
+        //var innerEntriesProp = prop.FindPropertyRelative("modifiers");
+        //ReorderableListGUI.ListFieldAbsolute(position, innerEntriesProp);
     }
 }
 
-[CustomPropertyDrawer(typeof(InteractiveObjectBT.Modifier))]
-public class InteractiveActionModifierEditor : PropertyDrawer
-{
-    public override float GetPropertyHeight(SerializedProperty prop, GUIContent label) {
-        var innerEntriesProp = prop.FindPropertyRelative("personalityModifiers");
-        return ReorderableListGUI.CalculateListFieldHeight(innerEntriesProp) + 65;
-    }
+//[CustomPropertyDrawer(typeof(InteractiveObjectBT.Modifier))]
+//public class InteractiveActionModifierEditor : PropertyDrawer
+//{
+//    public override float GetPropertyHeight(SerializedProperty prop, GUIContent label) {
+//        var innerEntriesProp = prop.FindPropertyRelative("personalityModifiers");
+//        return ReorderableListGUI.CalculateListFieldHeight(innerEntriesProp) + 65;
+//    }
 
-    public override void OnGUI(Rect position, SerializedProperty prop, GUIContent label) {
-  
-        var y = position.y;
-        var height = position.height;
+//    public override void OnGUI(Rect position, SerializedProperty prop, GUIContent label) {
 
-        position.height = 16;
-        EditorGUI.PropertyField(position, prop.FindPropertyRelative("type"));
-        position.y += 20;
-        EditorGUI.PropertyField(position, prop.FindPropertyRelative("delta"));
+//        var y = position.y;
+//        var height = position.height;
 
-        position.y = y + 40;
-        position.height = 23;
-        EditorGUI.LabelField(position, "Personality", LabelHelper.HeaderStyle);
+//        position.height = 16;
+//        EditorGUI.PropertyField(position, prop.FindPropertyRelative("type"));
+//        position.y += 20;
+//        EditorGUI.PropertyField(position, prop.FindPropertyRelative("delta"));
 
-        position.y = y + 60;
-        position.height = height - 60;
-        var innerEntriesProp = prop.FindPropertyRelative("personalityModifiers");
-        ReorderableListGUI.ListFieldAbsolute(position, innerEntriesProp);
-    }
-}
+//        position.y = y + 40;
+//        position.height = 23;
+//        EditorGUI.LabelField(position, "Personality", LabelHelper.HeaderStyle);
 
-[CustomPropertyDrawer(typeof(InteractiveObjectBT.PersonalityModifier))]
-public class InteractiveActionPersonalityModifierEditor : PropertyDrawer
-{
-    public override float GetPropertyHeight(SerializedProperty prop, GUIContent label) {
-        return 40;
-    }
+//        position.y = y + 60;
+//        position.height = height - 60;
+//        var innerEntriesProp = prop.FindPropertyRelative("personalityModifiers");
+//        ReorderableListGUI.ListFieldAbsolute(position, innerEntriesProp);
+//    }
+//}
 
-    public override void OnGUI(Rect position, SerializedProperty prop, GUIContent label) { 
-        position.height = 16;
-        EditorGUI.PropertyField(position, prop.FindPropertyRelative("type"));
-        position.y += 20;
-        EditorGUI.PropertyField(position, prop.FindPropertyRelative("delta"));
-    }
-}
+//[CustomPropertyDrawer(typeof(InteractiveObjectBT.PersonalityModifier))]
+//public class InteractiveActionPersonalityModifierEditor : PropertyDrawer
+//{
+//    public override float GetPropertyHeight(SerializedProperty prop, GUIContent label) {
+//        return 40;
+//    }
+
+//    public override void OnGUI(Rect position, SerializedProperty prop, GUIContent label) {
+//        position.height = 16;
+//        EditorGUI.PropertyField(position, prop.FindPropertyRelative("type"));
+//        position.y += 20;
+//        EditorGUI.PropertyField(position, prop.FindPropertyRelative("delta"));
+//    }
+//}
 
 
 static class LabelHelper

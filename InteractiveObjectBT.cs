@@ -5,53 +5,12 @@ using NodeCanvas.BehaviourTrees;
 using NodeCanvas;
 using ViAgents;
 using NodeCanvas.Framework;
-using ViAgents.Unity;
 using System.Linq;
 using System;
+using Ei.Agents.Core;
 
 public class InteractiveObjectBT : Interactive
 {
-    public enum ModifierType
-    {
-        Hunger,
-        Energy,
-        Comfort,
-        Fun,
-        Hygiene,
-        Social,
-        Bladder,
-        Room
-    }
-
-    public enum PersonalityType
-    {
-        Sloppy,
-        Neat,
-        Shy,
-        Outgoing,
-        Serious,
-        Playful,
-        Lazy,
-        Active,
-        Mean,
-        Nice
-    }
-
-    [Serializable]
-    public class PersonalityModifier
-    {
-        public PersonalityType type;
-        public float delta;
-    }
-
-    [Serializable]
-    public class Modifier
-    {
-        public ModifierType type;
-        public float delta;
-        public PersonalityModifier[] personalityModifiers = new PersonalityModifier[0];
-    }
-
     [Serializable]
     public class PositionOffset
     {
@@ -65,13 +24,13 @@ public class InteractiveObjectBT : Interactive
     public class BTAction
     {
         public string action;
+        public string owner;
         public BehaviourTree BT;
-        public Modifier[] modifiers = new Modifier[0];
     }
 
     public PositionOffset[] positionOffsets = new PositionOffset[0]; // where will agent stand when it starts interacting with object
     public BTAction[] actions;
-    private ViAgent agent;
+    private Agent agent;
 
     public bool[] spots;
 
@@ -136,7 +95,7 @@ public class InteractiveObjectBT : Interactive
         }
 
         // get agent reference for log purposes
-        this.agent = sender.GetComponent<ViAgent>();
+        this.agent = sender.GetComponent<Agent>();
 
         // we can force that user will appear at the defined location
         if (forceTransform) {
@@ -158,8 +117,13 @@ public class InteractiveObjectBT : Interactive
 
         // take blackboard from component
         var blackboard = sender.GetComponent<Blackboard>();
+        if (blackboard == null) {
+            blackboard = sender.AddComponent<Blackboard>();
+        }
+
 
         // copy all values from object blackboard
+        blackboard.SetValue("CurrentAction", action);
         blackboard.SetValue("InteractiveObject", gameObject);
         blackboard.SetValue("OffsetPosition", position.Position);
         blackboard.SetValue("LookAtPosition", position.LookAt);
@@ -231,7 +195,7 @@ public class InteractiveObjectBT : Interactive
 
     private void Log(string message) {
         if (this.agent != null) {
-            agent.Log(LogLevel.Debug, LogSource.Action, string.Format("✫ ({0}) {1}", gameObject.name, message));
+            Debug.Log(string.Format("✫ ({0}) {1}", gameObject.name, message));
         } else {
             Debug.Log(message);
         }

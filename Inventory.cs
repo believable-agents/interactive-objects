@@ -46,7 +46,7 @@ public class Inventory : MonoBehaviour {
 		// Otherwise, just increase the entry by the amount given
 		else {
 			item.AddNumber(objNumber);
-			DebugConsole.Log("Object Added!");
+			// DebugConsole.Log("Object Added!");
 		}
 
 		// Track the total size
@@ -69,14 +69,14 @@ public class Inventory : MonoBehaviour {
 		if(item.Number > objNumber) {
 			item.SubtractNumber(objNumber);
 			CurrentSize -= item.Object.Size * objNumber;
-			DebugConsole.Log("Object Removed");
+			// DebugConsole.Log("Object Removed");
 			return objNumber;
 		}
 		// If trying to remove as many or more objects as there are, return the number of objects there were, and remove the object from the inventory
 		else {
 			CurrentSize -= item.Object.Size * item.Number;
 			ItemList.Remove(item);
-			DebugConsole.Log("Objects All Removed");
+			// DebugConsole.Log("Objects All Removed");
 			return item.Number;
 		}
 	}

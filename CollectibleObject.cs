@@ -22,7 +22,7 @@ public class CollectibleObject : Interactive {
 		// Initialise largestInventory with the default inventory
 		Inventory largestInventory = sender.GetComponent<Inventory> ();
 
-		DebugConsole.Log("Searching for Inventories...");
+		// DebugConsole.Log("Searching for Inventories...");
 
 		// Find the largest inventory with enough space
 		foreach(Inventory currentInventory in inventories) {
